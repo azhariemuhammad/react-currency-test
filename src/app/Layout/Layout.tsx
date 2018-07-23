@@ -1,19 +1,15 @@
 import * as React from 'react';
 
-interface IProps {
-  compiler: string,
-  framework: string,
-  bundler: string
-}
+import Header from './Header'
+import Content from './Content';
 
-export class Layout extends React.Component<IProps, {}> {
-  render() {
+const Layout = (props: any) => {
     return( 
       <div>
-        <h1>
-          This is a {this.props.framework} application using {this.props.compiler} with {this.props.bundler}
-        </h1>
+        <Header />
+        <Content />
       </div>
     )
-  }
 }
+
+export default Layout
