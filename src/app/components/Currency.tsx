@@ -1,6 +1,8 @@
-import * as React from 'react'
+import * as React from 'react';
 
+import CurrencyTable from './Currency-table'
 import { getData } from '../api'
+
 
 export default class Currency extends React.Component<{}> {
   constructor(props: any) {
@@ -19,14 +21,13 @@ export default class Currency extends React.Component<{}> {
         date: data.date,
         rates: data.rates
       })
-      console.log(this.state)
     })
   }
 
   render() {
     return (
       <div>
-        content
+        <CurrencyTable />
       </div>
     )
   }
