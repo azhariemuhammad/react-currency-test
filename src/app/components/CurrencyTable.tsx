@@ -36,37 +36,43 @@ export class CurrencyTable extends React.Component<{}, IState> {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     getData().then(({data}) => {
-      console.log(data)
       this.setState({
         base: data.base,
         date: data.date,
         rates: data.rates
       })
     })
+    .catch(err => {
+      console.log(err)
+    })
   }
   shouldComponentUpdate(nextProps: any, nextState: any) {
-    let shouldUpdate = this.state.exchange !== nextState.exchange;
-    return shouldUpdate;
+    let shouldUpdate1 = this.state.rates !== nextState.rates;
+    let shouldUpdate2 = this.state.baseNum !== nextState.baseNum;
+    return shouldUpdate1 || shouldUpdate2
   }
 
-  public getExchangeRate (rate: number): any {    
-    const exchange = rate * this.state.baseNum
-    this.setState({
-      exchange: rate * this.state.baseNum
-    })
-    return this.state.exchange
+  public getExchangeRate (rate: any): any {
+    let result: number
+    if (typeof rate === 'undefined') {
+      result =  1
+    } else {
+        result = rate * Number(this.state.baseNum)
+    }
+    
+    return result
   }
 
   public handleChange (event: any): any {
     this.setState({
       baseNum: event.target.value
     })
-    
   }
   
   public render() {
+    console.log(this.state)
     return (
       <Card.Group>
         <Card>
@@ -78,7 +84,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
             {this.state.defaultCurrency.map((item: string, idx: number) =>
               <div key={idx} style={boxStyle}>
               <p>{item}</p>
-              <p>{this.state.rates[item]}</p>
+              <p>{this.getExchangeRate(this.state.rates[item])}</p>
               <p>1 USD = {item} {this.state.rates[item]}</p>
               </div>  
             )}
