@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import Currency from '../components/Currency'
+import {CurrencyTable} from '../components/CurrencyTable'
 const Content = () => {
   return (
     <div>
-      <Currency />
+      <CurrencyTable />
     </div>
   )
 }

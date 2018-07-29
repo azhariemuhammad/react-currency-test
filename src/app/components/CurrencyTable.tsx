@@ -1,13 +1,19 @@
 import * as React from 'react'
-import { Card } from 'semantic-ui-react'
+import { Card, Button } from 'semantic-ui-react'
 
 import { getData } from '../api'
+import dataCurrency from '../file.ts'
 
-// interface ICurrencyTableProps {
-//   base: string
-//   date: string
-//   rates: any
-// }
+interface ICurrencyTableProps {
+  base: string
+  date: string
+  rates: any
+}
+
+interface IcurrencySymbols {
+  currency: string
+  state: string
+}
 
 interface IState {
   baseNum: number
@@ -27,7 +33,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
     this.state = {
       baseNum: 10000,
       initialValue: 0,
-      defaultCurrency: ['EUR', 'GBP', 'SGD'],
+      defaultCurrency: ['IDR', 'EUR', 'GBP', 'SGD'],
       moreCurrencies: [
         'CAD',
         'IDR',
@@ -43,13 +49,14 @@ export class CurrencyTable extends React.Component<{}, IState> {
       date: '',
       rates: {},
       newCurrency: ''
-      
     }
+
     this.getExchangeRate = this.getExchangeRate.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleInputNewCurrency = this.handleInputNewCurrency.bind(this)
     this.addNewcurrency = this.addNewcurrency.bind(this)
+    this.removeCurrency = this.removeCurrency.bind(this)
+    this.getCurrency = this.getCurrency.bind(this)
   }
 
   public componentDidMount() {
@@ -64,14 +71,15 @@ export class CurrencyTable extends React.Component<{}, IState> {
       console.log(err)
     })
   }
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+
+  public shouldComponentUpdate(nextProps: any, nextState: any) {
     let shouldUpdate1 = this.state.rates !== nextState.rates;
     let shouldUpdate2 = this.state.baseNum !== nextState.baseNum;
     let shouldUpdate3 = this.state.defaultCurrency !== nextState.defaultCurrency
     return shouldUpdate1 || shouldUpdate2 ||  shouldUpdate3
   }
 
-  public getExchangeRate (rate: any): any {
+  public getExchangeRate (rate: any): Number {
     let result: number
     if (typeof rate === 'undefined') {
       result =  1
@@ -79,18 +87,31 @@ export class CurrencyTable extends React.Component<{}, IState> {
         result = rate * Number(this.state.baseNum)
     }
     
-    return result
+    return Math.round(result)
   }
 
   public handleChange (event: any): any {
-    this.setState({
-      baseNum: event.target.value
-    })
+    const target = event.target;
+    const value = target.value
+    const name = target.name;
+    
+    if (name === 'baseNum') {
+      this.setState({
+        baseNum: Number(value)
+      })
+    } else if (name === 'newCurrency') {
+      this.setState({
+        newCurrency: value
+      })
+    }
   }
 
-  public handleInputNewCurrency(event: any): any {
+  public removeCurrency(index: number, event: any): void {
+    event.preventDefault()
+    let currencies = [...this.state.defaultCurrency]
+    currencies.splice(index, 1)
     this.setState({
-      newCurrency: event.target.value
+      defaultCurrency: currencies
     })
   }
 
@@ -98,38 +119,56 @@ export class CurrencyTable extends React.Component<{}, IState> {
     this.setState({
       defaultCurrency: [...this.state.defaultCurrency, this.state.newCurrency],
     })
-    // console.log([...this.state.defaultCurrency, this.state.newCurrency])
-    console.log(this.state.moreCurrencies);
-    
   }
 
-  public handleSubmit(event: any): any {
-    console.log(this.state.newCurrency)
+  public getCurrency(value: string): string {
+    const data: any = dataCurrency
+    let res: string
+    data.dataCurrency.map((item: IcurrencySymbols) => {
+      if (item.currency == value) {
+        res = item.state
+      }
+    })
+    return res
+  }
+
+  public handleSubmit(event: any): void {
     this.addNewcurrency()
     event.preventDefault()
   }
+
   public render() {
-    console.log(this.state)
     return (
       <Card.Group>
         <Card>
         <Card.Content>
           <Card.Header>USD-United States Dollars</Card.Header>
           <h2>USD</h2>
-          <input type="text" placeholder="10.000" onChange={(e) => this.handleChange(e)}/>
+          <input type="text" name="baseNum" placeholder="10.000" onChange={this.handleChange}/>
           <Card.Content>
             {this.state.defaultCurrency.map((item: string, idx: number) =>
-              <div key={idx} style={boxStyle}>
-              <p>{item}</p>
-              <p>{this.getExchangeRate(this.state.rates[item])}</p>
-              <p>1 USD = {item} {this.state.rates[item]}</p>
+            <div style={boxStyle}>
+              <div key={idx} style={left}>
+              <div style={fooStyle}>
+                <p>{item}</p>
+                <p>{this.getExchangeRate(this.state.rates[item])}</p>
+              </div>
+                
+                <p>{item} - {this.getCurrency(item)}</p>
+                {Object.keys(this.state.rates).length > 0 && 
+                  <p>1 USD = {item} {this.state.rates[item].toFixed(4)}</p>
+                }
+              </div>
+                <div style={right}>
+                <button onClick={(e) => this.removeCurrency(idx, e)}>X</button>
+                </div>
               </div>  
             )}
           </Card.Content>
         </Card.Content>
-        <form onSubmit={this.handleSubmit}>
-          <input list="browsers" name="myBrowser" onChange={(e) => this.handleInputNewCurrency(e)} />
-            <datalist id="browsers">
+        <form style={formStyle} onSubmit={this.handleSubmit}>
+          <input list="currencies" name="newCurrency" onChange={this.handleChange} />
+            <datalist id="currencies">
             {this.state.moreCurrencies.map((item: string, idx:number) => 
                 <option key={idx} value={item} />
             )}
@@ -143,7 +182,27 @@ export class CurrencyTable extends React.Component<{}, IState> {
 }
 
 const boxStyle = {
+  display: 'flex',
+  flexFlow: 'row wrap',
   width: '100%',
-  height: '75px',
+  height: '100px',
   border: '1px solid black'
 };
+
+const left = {
+  width: '220px',
+  borderRight: '1px solid'
+}
+const right = {
+  alignSelf: 'center',
+  marginLeft: '8px',
+}
+
+const formStyle = {
+  marginLeft: '14px',
+}
+
+const fooStyle = {
+  display: 'flex',
+  justifyContent: 'space-between'
+}
