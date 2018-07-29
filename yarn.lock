@@ -4874,6 +4874,12 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-currency-formatter@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-currency-formatter/-/react-currency-formatter-1.1.0.tgz#69296c82efd6ef7a9e74bcae52414a5e23bcdba2"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-dom@16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
@@ -4886,6 +4892,13 @@ react-dom@16.4.1:
 react-is@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.4.1.tgz#d624c4650d2c65dbd52c72622bbf389435d9776e"
+
+react-number-format@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.5.0.tgz#f319ac72dbf07d6d9d33b0c2a91de7a2dba23a5a"
+  dependencies:
+    babel-runtime "^6.26.0"
+    prop-types "^15.6.0"
 
 react-reconciler@^0.7.0:
   version "0.7.0"
