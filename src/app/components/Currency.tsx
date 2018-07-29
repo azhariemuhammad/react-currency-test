@@ -14,24 +14,20 @@ export default class Currency extends React.Component<{}, MyState> {
     }
   }
 
-  componentWillMount() {
-    getData().then(({data}) => {
-      this.setState({
-        base: data.base,
-        date: data.date,
-        rates: data.rates
-      })
-    })
-  }
+  // componentWillMount() {
+  //   getData().then(({data}) => {
+  //     this.setState({
+  //       base: data.base,
+  //       date: data.date,
+  //       rates: data.rates
+  //     })
+  //   })
+  // }
 
   render() {
     return (
       <div>
-        <CurrencyTable 
-          base={this.state.base} 
-          date={this.state.date}
-          rates={this.state.rates}
-        />
+        <CurrencyTable />
       </div>
     )
   }
