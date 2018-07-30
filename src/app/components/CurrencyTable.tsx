@@ -79,15 +79,20 @@ export class CurrencyTable extends React.Component<{}, IState> {
     return shouldUpdate1 || shouldUpdate2 ||  shouldUpdate3
   }
 
-  public getExchangeRate (rate: any): Number {
+  public currencyFormatter(val: number): string {
+    console.log('helo', val)
+    const newValue = val.toString().replace(/,\s?/g, "");
+    return newValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  }
+
+  public getExchangeRate (rate: any): string {
     let result: number
     if (typeof rate === 'undefined') {
       result =  1
     } else {
         result = rate * Number(this.state.baseNum)
     }
-    
-    return Math.round(result)
+    return this.currencyFormatter(Math.round(+result))
   }
 
   public handleChange (event: any): any {
@@ -156,7 +161,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
                 
                 <p>{item} - {this.getCurrency(item)}</p>
                 {Object.keys(this.state.rates).length > 0 && 
-                  <p>1 USD = {item} {this.state.rates[item].toFixed(4)}</p>
+                  <p>1 USD = {item} {this.currencyFormatter(this.state.rates[item].toFixed(3))}</p>
                 }
               </div>
                 <div style={right}>
