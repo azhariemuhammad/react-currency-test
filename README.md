@@ -4,6 +4,8 @@
 Clone the repository:
 
 git clone https://github.com/azhariemuhammad/react-currency-test.git
+
+
 To start the project run following command in your terminal:
 
 ```npm start```
