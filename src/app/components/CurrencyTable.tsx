@@ -4,12 +4,6 @@ import { Card, Button } from 'semantic-ui-react'
 import { getData } from '../api'
 import dataCurrency from '../file.ts'
 
-interface ICurrencyTableProps {
-  base: string
-  date: string
-  rates: any
-}
-
 interface IcurrencySymbols {
   currency: string
   state: string
@@ -52,7 +46,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
     }
 
     this.getExchangeRate = this.getExchangeRate.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    this.handleEvent = this.handleEvent.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.addNewcurrency = this.addNewcurrency.bind(this)
     this.removeCurrency = this.removeCurrency.bind(this)
@@ -80,7 +74,6 @@ export class CurrencyTable extends React.Component<{}, IState> {
   }
 
   public currencyFormatter(val: number): string {
-    console.log('helo', val)
     const newValue = val.toString().replace(/,\s?/g, "");
     return newValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   }
@@ -95,7 +88,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
     return this.currencyFormatter(Math.round(+result))
   }
 
-  public handleChange (event: any): any {
+  public handleEvent (event: any): any {
     const target = event.target;
     const value = target.value
     const name = target.name;
@@ -149,12 +142,12 @@ export class CurrencyTable extends React.Component<{}, IState> {
         <Card.Content>
           <Card.Header>USD-United States Dollars</Card.Header>
           <h2>USD</h2>
-          <input type="text" name="baseNum" placeholder="10.000" onChange={this.handleChange}/>
+          <input type="text" name="baseNum" placeholder="10.000" onChange={this.handleEvent}/>
           <Card.Content>
             {this.state.defaultCurrency.map((item: string, idx: number) =>
             <div style={boxStyle}>
               <div key={idx} style={left}>
-              <div style={fooStyle}>
+              <div style={detailStyle}>
                 <p>{item}</p>
                 <p>{this.getExchangeRate(this.state.rates[item])}</p>
               </div>
@@ -172,7 +165,7 @@ export class CurrencyTable extends React.Component<{}, IState> {
           </Card.Content>
         </Card.Content>
         <form style={formStyle} onSubmit={this.handleSubmit}>
-          <input list="currencies" name="newCurrency" onChange={this.handleChange} />
+          <input list="currencies" name="newCurrency" onChange={this.handleEvent} />
             <datalist id="currencies">
             {this.state.moreCurrencies.map((item: string, idx:number) => 
                 <option key={idx} value={item} />
@@ -207,7 +200,7 @@ const formStyle = {
   marginLeft: '14px',
 }
 
-const fooStyle = {
+const detailStyle = {
   display: 'flex',
   justifyContent: 'space-between'
 }
